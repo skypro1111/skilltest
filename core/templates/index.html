@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="content"></div>
+</body>
+
+<script>
+
+    var chatSocket = new WebSocket(
+        'ws{% if request.is_secure %}s{% endif %}://' + window.location.host +
+        '/ws/index_group/');
+
+    chatSocket.onclose = function (e) {
+        console.error('Form socket closed unexpectedly');
+    };
+
+    chatSocket.onmessage = function (e) {
+        console.log(e.data);
+        var data = JSON.parse(e.data);
+        var message = data['message'];
+        $.ajax({
+            url: message,
+            success: function (data) {
+                $('#content').empty().append(data);
+            }
+        });
+    };
+
+
+</script>
+
+</html>
